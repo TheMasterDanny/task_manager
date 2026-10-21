@@ -1,75 +1,81 @@
-# React + TypeScript + Vite
+# Tasks
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A Kanban-style task manager that runs entirely in the browser. Organize tasks across columns, drag them between stages, and pick up where you left off: everything is saved locally, no account needed.
 
-Currently, two official plugins are available:
+**Live app:** https://themasterdanny.github.io/task_manager/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- **Board view** with four columns: To do, In progress, Review and Done
+- **Drag and drop** cards between and within columns
+- **List view** that groups tasks by status
+- **Priorities** (high, medium, low) and an optional due date and time; tasks due today or earlier are marked urgent
+- **Search and filter** by title and priority
+- **Mark as done** with one click; unchecking returns the task to its previous column
+- **Responsive**: on phones the board shows one column at a time with tabs, and the task form opens as a bottom sheet
+- **Saved automatically** in your browser's localStorage
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+> Tasks are stored per browser and device. Clearing your browser data removes them, and they don't sync between devices.
 
-## Expanding the ESLint configuration
+## Tech stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- [React 19](https://react.dev) + [TypeScript](https://www.typescriptlang.org)
+- [Vite](https://vite.dev) for development and builds
+- [Tailwind CSS v4](https://tailwindcss.com) for styling
+- [Zustand](https://zustand.docs.pmnd.rs) for state, with its `persist` middleware for localStorage
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Getting started
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Requires Node.js 20.19+ or 22.12+.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+The app runs at http://localhost:5173.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Script | What it does |
+|---|---|
+| `npm run dev` | Starts the dev server with hot reload |
+| `npm run build` | Type-checks and builds for production into `dist/` |
+| `npm run preview` | Serves the production build locally |
+| `npm run lint` | Runs ESLint |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Project structure
 
 ```
+src/
+├── App.tsx               # Page layout, search/filter/view state, task dialog
+├── index.css             # Tailwind import, design tokens (@theme) and base styles
+├── components/
+│   ├── Header.tsx        # Title, task count, "New task" button
+│   ├── Toolbar.tsx       # Search, priority filter, board/list switch
+│   ├── TaskDialog.tsx    # Add / edit task form
+│   ├── board/            # Board, columns, cards, phone column tabs, drag and drop
+│   ├── list/             # List view
+│   └── ui/               # Button, Select, icons, shared task pieces
+├── lib/
+│   ├── dates.ts          # Due date formatting
+│   └── styles.ts         # Class name helpers, tone and priority classes
+└── store/
+    ├── useConfigStore.ts # Columns and priorities
+    └── useTaskStore.ts   # Tasks and actions, persisted to localStorage
+```
+
+## Styling
+
+The design tokens live in the `@theme` block in [`src/index.css`](src/index.css), so they're available as Tailwind classes:
+
+- Colors: `bg-surface`, `text-ink`, `text-ink-soft`, `border-line`, `bg-brand`, `text-urgent`
+- Column tones: `bg-lilac`, `text-sky-ink`, ... plus `tone-lilac` / `tone-sky` / `tone-peach` / `tone-mint`, which set `bg-tone` and `text-tone-ink` for everything inside a column
+- Priority chips: `bg-high-bg text-high-ink`, `bg-medium-bg text-medium-ink`, `bg-low-bg text-low-ink`
+- Fonts: `font-display` (Bricolage Grotesque), `font-body` (Figtree)
+- Radii and shadows: `rounded-col`, `rounded-card`, `rounded-ctl`, `shadow-card`
+- Breakpoints (mobile-first): `tablet:` from 701px, `desktop:` from 1101px
+
+## Deployment
+
+The app deploys to GitHub Pages through [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) on every push to `main`. Production builds use the `/task_manager/` base path (set in [`vite.config.ts`](vite.config.ts)); the dev server stays at `/`.
+
+To set it up on a fork, go to **Settings → Pages → Source** and choose **GitHub Actions**, then update `base` in `vite.config.ts` to match the repository name.
