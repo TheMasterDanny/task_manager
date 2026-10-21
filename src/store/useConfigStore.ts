@@ -1,27 +1,27 @@
 import { create } from "zustand";
 
-type CardTones = "lilac" | "sky" | "peach" | "mint";
+export type CardTones = "lilac" | "sky" | "peach" | "mint";
 
-type CardTitles = "To do" | "In progress" | "Review" | "Done";
+export type CardTitles = "To do" | "In progress" | "Review" | "Done";
 
-type CardIds = "todo" | "doing" | "review" | "done";
+export type CardIds = "todo" | "doing" | "review" | "done";
 
-type Priorities = "High" | "Medium" | "Low";
+export type PriorityIds = "high" | "medium" | "low";
+
+export type Priorities = "High" | "Medium" | "Low";
+
+export interface Column {
+  id: CardIds;
+  title: CardTitles;
+  tone: CardTones;
+}
 
 interface ColumnsState {
-  columns: {
-    id: CardIds;
-    title: CardTitles;
-    tone: CardTones;
-  }[];
+  columns: Column[];
 }
 
 interface PriorityState {
-  priorities: {
-    high: Priorities;
-    medium: Priorities;
-    low: Priorities;
-  }[];
+  priorities: Record<PriorityIds, Priorities>;
 }
 
 export const useConfigStore = create<ColumnsState & PriorityState>(() => ({
@@ -31,7 +31,5 @@ export const useConfigStore = create<ColumnsState & PriorityState>(() => ({
         { id: "review", title: "Review", tone: "peach" },
         { id: "done", title: "Done", tone: "mint" },
     ],
-    priorities: [
-        { high: "High", medium: "Medium", low: "Low" },
-    ],
+    priorities: { high: "High", medium: "Medium", low: "Low" },
 }));
