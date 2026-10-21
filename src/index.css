@@ -1,111 +1,83 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+@import "tailwindcss";
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+/* ---------- Tokens (from simple_example/App.css) ---------- */
+@theme {
+  --color-bg: #eef1f8;
+  --color-surface: #ffffff;
+  --color-ink: #1b2140;
+  --color-ink-soft: #5b6385;
+  --color-line: #d9deec;
+  --color-brand: #2f4bd8;
+  --color-urgent: #d33a2f;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* column tones: wash / ink */
+  --color-lilac: #ddd8ff;  --color-lilac-ink: #4636c2;
+  --color-sky: #d4e5ff;    --color-sky-ink: #1d5bc4;
+  --color-peach: #ffe4c4;  --color-peach-ink: #b45a06;
+  --color-mint: #d5f2e3;   --color-mint-ink: #1d7a4c;
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
+  /* priority chips */
+  --color-high-bg: #fde3e1;   --color-high-ink: #c22f25;
+  --color-medium-bg: #ffebd2; --color-medium-ink: #ad5c08;
+  --color-low-bg: #dcf4e8;    --color-low-ink: #1b7a4b;
+
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-body: "Figtree", system-ui, sans-serif;
+
+  --radius-col: 22px;
+  --radius-card: 14px;
+  --radius-ctl: 10px;
+
+  --shadow-card: 0 1px 0 rgba(27, 33, 64, 0.04), 0 4px 14px -6px rgba(27, 33, 64, 0.18);
+  --shadow-dialog: 0 30px 60px -20px rgba(27, 33, 64, 0.4);
+
+  /* mobile-first: phone < 701px, tablet 701–1100px, desktop > 1100px */
+  --breakpoint-tablet: 701px;
+  --breakpoint-desktop: 1101px;
+
+  --animate-pop: pop 0.18s ease-out;
+  --animate-sheet: sheet 0.22s ease-out;
+
+  @keyframes pop {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  }
+  @keyframes sheet {
+    from { transform: translateY(40px); opacity: 0; }
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+/* The current column's tone, set by the tone-* utilities below:
+   bg-tone, text-tone-ink, border-tone-ink, ... */
+@theme inline {
+  --color-tone: var(--tone);
+  --color-tone-ink: var(--tone-ink);
+}
+
+@utility tone-lilac { --tone: var(--color-lilac); --tone-ink: var(--color-lilac-ink); }
+@utility tone-sky   { --tone: var(--color-sky);   --tone-ink: var(--color-sky-ink); }
+@utility tone-peach { --tone: var(--color-peach); --tone-ink: var(--color-peach-ink); }
+@utility tone-mint  { --tone: var(--color-mint);  --tone-ink: var(--color-mint-ink); }
+
+/* ---------- Base ---------- */
+@layer base {
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font: 400 15px/1.45 var(--font-body);
+    -webkit-font-smoothing: antialiased;
   }
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
+  button { cursor: pointer; }
+
+  svg {
+    width: 18px; height: 18px; flex: none;
+    fill: none; stroke: currentColor; stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round;
   }
-}
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
+  :focus-visible { outline: 2.5px solid var(--color-brand); outline-offset: 2px; }
 
-body {
-  margin: 0;
-}
-
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
   }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
-}
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
 }
