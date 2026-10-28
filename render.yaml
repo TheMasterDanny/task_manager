@@ -1,0 +1,29 @@
+# Render Blueprint for the API: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: task-manager-api
+    runtime: node
+    plan: free
+    # Same region as the Neon database, so queries stay fast.
+    region: ohio
+    rootDir: server
+    # Dev dependencies (prisma, typescript) are needed to build.
+    buildCommand: npm ci --include=dev && npm run build
+    # Applies pending migrations before starting. Free instances can't run a pre-deploy command.
+    startCommand: npm run db:deploy && npm start
+    healthCheckPath: /health
+    # Only redeploy when the API changes, not the frontend.
+    buildFilter:
+      paths:
+        - server/**
+    envVars:
+      # Asked for when the Blueprint is created; never stored in the repo.
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_URL
+        sync: false
+      # A new random secret, different from the one used locally.
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CLIENT_ORIGIN
+        value: https://themasterdanny.github.io

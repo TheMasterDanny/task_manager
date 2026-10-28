@@ -2,8 +2,9 @@ import { useAuthStore } from "../store/useAuthStore";
 
 // In development the API runs locally. A production build only offers accounts
 // when VITE_API_URL is set; otherwise the app works in guest mode only.
+// `||` and not `??`: in CI an unset variable arrives as an empty string.
 export const API_URL: string | null =
-  import.meta.env.VITE_API_URL ?? (import.meta.env.DEV ? "http://localhost:3000" : null);
+  import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:3000" : null);
 
 export class ApiError extends Error {
   status: number;
