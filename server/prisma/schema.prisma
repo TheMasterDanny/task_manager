@@ -38,7 +38,8 @@ model Task {
   date       String
   time       String
   prevStatus Status?
-  // Order inside a column. A float lets a task go between two others without renumbering.
+  // Order among the user's tasks, like the array order in the frontend store.
+  // A float lets a task go between two others without renumbering.
   position   Float
   userId     String
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
