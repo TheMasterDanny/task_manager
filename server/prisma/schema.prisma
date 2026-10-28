@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Same ids as CardIds and PriorityIds in the frontend (src/store/useConfigStore.ts).
+enum Status {
+  todo
+  doing
+  review
+  done
+}
+
+enum Priority {
+  high
+  medium
+  low
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  tasks        Task[]
+}
+
+model Task {
+  id         String   @id @default(uuid())
+  title      String
+  status     Status
+  priority   Priority
+  // Kept as strings, in the same format the frontend already uses.
+  date       String
+  time       String
+  prevStatus Status?
+  // Order inside a column. A float lets a task go between two others without renumbering.
+  position   Float
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId, status])
+}
