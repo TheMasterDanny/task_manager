@@ -10,8 +10,9 @@ const jwtSecret = required("JWT_SECRET");
 if (jwtSecret.length < 32) throw new Error("JWT_SECRET must be at least 32 characters long");
 
 // How many proxies sit in front of the API: 0 locally, 3 on Render (Cloudflare, Render's
-// load balancer and a local proxy). Getting it wrong breaks the per-IP login rate limit.
-const trustProxyHops = Number(process.env["TRUST_PROXY_HOPS"] ?? 0);
+// load balancer and a local proxy). Getting it wrong breaks the per-IP login rate limit,
+// so it's required: a missing value stops the API instead of failing silently.
+const trustProxyHops = Number(required("TRUST_PROXY_HOPS"));
 if (!Number.isInteger(trustProxyHops) || trustProxyHops < 0)
   throw new Error("TRUST_PROXY_HOPS must be a whole number, 0 or more");
 
