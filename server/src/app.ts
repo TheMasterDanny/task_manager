@@ -23,6 +23,20 @@ app.get("/health", async (_req, res) => {
   res.json({ status: "ok" });
 });
 
+// TEMPORARY: shows the caller's own IP headers, to pick the right "trust proxy" setting.
+app.get("/debug/ip", (req, res) => {
+  const h = (name: string) => req.get(name) ?? null;
+  res.set("Cache-Control", "no-store").json({
+    ip: req.ip,
+    ips: req.ips,
+    xForwardedFor: h("x-forwarded-for"),
+    cfConnectingIp: h("cf-connecting-ip"),
+    trueClientIp: h("true-client-ip"),
+    xRealIp: h("x-real-ip"),
+    remoteAddress: req.socket.remoteAddress,
+  });
+});
+
 app.use("/auth", authRouter);
 app.use("/tasks", tasksRouter);
 
