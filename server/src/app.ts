@@ -8,9 +8,9 @@ import { env } from "./env.ts";
 
 export const app = express();
 
-// Hosting providers put a proxy in front of the API. Trusting one hop makes req.ip the
-// real client IP, which the login rate limit depends on.
-app.set("trust proxy", 1);
+// Skips the hosting provider's proxies so req.ip is the real client IP, which the login
+// rate limit depends on. IPs a client adds to X-Forwarded-For itself are ignored.
+app.set("trust proxy", env.trustProxyHops);
 
 // Security headers, and only our frontend may call the API from a browser.
 app.use(helmet());

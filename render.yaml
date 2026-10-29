@@ -27,3 +27,6 @@ services:
         generateValue: true
       - key: CLIENT_ORIGIN
         value: https://themasterdanny.github.io
+      # Cloudflare, Render's load balancer and a local proxy, measured on 2026-10-28.
+      - key: TRUST_PROXY_HOPS
+        value: "3"
